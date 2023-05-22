@@ -2,24 +2,36 @@
 #include <stdlib.h>
 #include <string.h>
 
-char get_user_input(void) {
-        char user_input[5];
+char get_user_input(char **user_input) {
+        char temp_buff[5];
         char *end_ptr;
         printf("Enter the ticker for the company you wish to display ==> ");
-        fgets(user_input, 5, stdin);
-        return user_input;
+        fgets(temp_buff, 5, stdin);
+        // puts(user_input);
+        *user_input = strdup(temp_buff);
+        // return user_input;
 
 
 }
 
-void find_ticker_symbol(char *companies, char *user_input) {
-        char *company_name[30];
-        char delim[] = "\n:";
+void find_ticker_symbol(char *companies, const char *user_input) {
+        char *company_name[225] = {0};
+        char delim[] = ":\n";
         int i = 0;
+        // int j = 0;
+        // puts(user_input);
         company_name[i] = strtok(companies, delim);
 
         while(company_name[i] != NULL) {
+                // printf("%s\n", company_name[i]);
                 company_name[++i] = strtok(NULL, delim);
+        }
+        for (int j = 0; j < sizeof(company_name); j++) {
+                // puts(user_input);
+                // puts(company_name[j]);
+                if (strcmp(user_input, company_name[j]) == 0) {
+                        printf("%s\n", company_name[++j]);
+                }
         }
 }
 
@@ -40,5 +52,9 @@ int main(void) {
         fclose(stream);
         companies[count] = '\0';
         // printf("%s\n", tickers);
-        char user_input = get_user_input();
+        char *user_input = NULL;
+        get_user_input(&user_input);
+        // puts("IN main");
+        // puts(&user_input);
+        find_ticker_symbol(companies, user_input);
 }
